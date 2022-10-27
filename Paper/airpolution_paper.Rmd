@@ -1,0 +1,35 @@
+---
+title: |
+       | Airpolution & Mortality Rates
+       | 1436 - Spatial Economics 
+author: "Group II"
+date: "`r format(Sys.Date(), format = '%m/%d/%Y')`"
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage{amssymb}
+   - \usepackage{float}
+   - \usepackage{titling}
+   - \usepackage{xcolor}
+output: 
+   pdf_document:
+      number_sections: TRUE
+bibliography: references.bib  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      fig.pos = "center",
+                      fig.width = 8,
+                      fig.height = 4,
+                      fig.pos = "H",
+                      out.extra = "")
+```
+
+\begin{center}
+\includegraphics[width = 380pt]{pollution.png} 
+\end{center}
+\thispagestyle{empty}
+\newpage
+\pagenumbering{arabic} 
+
+# Introduction

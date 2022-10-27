@@ -1,6 +1,6 @@
 ---
 title: |
-       | Airpolution & Mortality Rates
+       | Air Pollution & Mortality Rates
        | 1436 - Spatial Economics 
 author: "Group II"
 date: "`r format(Sys.Date(), format = '%m/%d/%Y')`"

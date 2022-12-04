@@ -1,7 +1,3 @@
-AnnualbyProvince (1)
-Database???Annual by Province;;;;;;;;;;;;;;;;;;;;
-Indicators£ºUrban Population(10000 persons);;;;;;;;;;;;;;;;;;;;
-Year£ºLATEST20;;;;;;;;;;;;;;;;;;;;
 Region;2021;2020;2019;2018;2017;2016;2015;2014;2013;2012;2011;2010;2009;2008;2007;2006;2005;2004;2003;2002
 Beijing;1916;1916;1913;1909;1907;1904;1897;1878;1836;1793;1745;1686;1581;1504;1416;1350;1286;;;
 Tianjin;1165;1175;1168;1161;1178;1202;1193;1180;1160;1124;1079;1034;958;908;851;814;783;;;
@@ -34,5 +30,3 @@ Gansu;1328;1306;1272;1250;1214;1161;1116;1070;1027;989;951;925;891;856;822;792;7
 Qinghai;362;356;347;336;325;312;298;293;281;273;264;252;234;226;221;215;213;;;
 Ningxia;479;468;456;441;430;408;390;372;352;337;325;303;288;278;269;260;252;;;
 Xinjiang;1482;1464;1421;1361;1287;1224;1163;1088;1027;996;973;940;860;845;820;778;747;;;
-Note:Population data for 2000 and 2001 are estimated on the basis of population census, the rest of the data are estimated on the basis of the annual national sample surveys on population changes. Population data by region are permanent resident population since 2005.;;;;;;;;;;;;;;;;;;;;
-Data Sources£ºNational Bureau of Statistics;;;;;;;;;;;;;;;;;;;;

@@ -1,7 +1,3 @@
-AnnualbyProvince (17)
-Database???Annual by Province;;;;;;;;;;;;;;;;;;;;
-Indicators£ºNumber of Health Care Institutions(unit);;;;;;;;;;;;;;;;;;;;
-Year£ºLATEST20;;;;;;;;;;;;;;;;;;;;
 Region;2021;2020;2019;2018;2017;2016;2015;2014;2013;2012;2011;2010;2009;2008;2007;2006;2005;2004;2003;2002
 Beijing;10699;10599;10336;10058;9976;9773;9771;9638;9683;9632;9495;9411;9734;6497;6210;4877;4818;4835;5073;4998
 Tianjin;6076;5838;5962;5686;5539;5443;5223;4990;4689;4551;4428;4542;4238;2784;2334;2367;2472;2560;7132;2641
@@ -34,6 +30,3 @@ Gansu;25759;26204;26697;27897;28857;28197;27799;27916;26697;26401;26632;26673;25
 Qinghai;6408;6407;6513;6396;6375;6291;6223;6241;6020;5948;5887;5781;5959;1582;1619;1643;1478;1439;9559;1450
 Ningxia;4571;4574;4397;4450;4271;4254;4288;4255;4231;4140;4132;4129;4149;1629;1530;1553;1463;1483;8990;1370
 Xinjiang;16970;18158;18376;18450;18724;18825;18798;18873;18663;18320;17412;16000;14244;6739;7465;8175;8087;9086;9618;10296
-Note:1.Number of village clinics was included in health care institutions.;;;;;;;;;;;;;;;;;;;;
-¡¡¡¡¡¡2.Since 2002, health care institutions no longer includes headquarters of higher and secondary medical schools, drug test institutions, frontier health and quarantine institutions and fami;;;;;;;;;;;;;;;;;;;;
-Data Sources£ºNational Bureau of Statistics;;;;;;;;;;;;;;;;;;;;

@@ -1,35 +1,56 @@
 # source 
 source("./Code/Auxilliary.R")
 
-# import 
-dat_WHO <- openxlsx::read.xlsx("./Data/WHO_Pollution_Data.xlsx", sheet = 2)
-cities <- read.csv("./Data/chinese_cities.csv")
-cities <- cities[, c("city", "admin_name")]
-cities <- lapply(cities, tolower) |> as.data.frame()
-
 #  packages
-get.package(c("sf", "osmextract", "fuzzyjoin", "dplyr"))
+get.package(c("sf", "osmextract", "fuzzyjoin", "dplyr", "tidyr", "zoo"))
 
 # load chinese polygon coords
 poly_china <- openstreetmap_fr_zones[which(openstreetmap_fr_zones$parent == "china"), ]
 
-# subset chinese data from the WHO database
-dat_China <- dat_WHO[dat_WHO[, "WHO.Country.Name"] == "China", ]
-dat_China[, "City.or.Locality"] <- tolower(dat_China[, "City.or.Locality"])
-colnames(dat_China)[4] <- "city"
+# files to join 
+files_l <- list.files("./Data/China_sourced/csv", full.names = TRUE)
+names <- list.files("./Data/China_sourced/csv")
 
-# look at city or locality 
-unique(dat_China[, "City.or.Locality"])
-unique(cities[, "admin_name"])
+# get names from filenames
+var_names <- gsub(" ", "_", stringr::str_remove(names, ".csv") |> trimws())
 
-# check 
-tmp <- unique(dat_China[, "City.or.Locality"]) %in% cities[, "city"] # looks bad
+# read files 
+Map(\(file, name){
+  
+  # read csv
+  tmp <- read.csv2(file)
+  
+  # correct colnames
+  years <- stringr::str_remove(colnames(tmp), "X")
+  name_tmp <- paste0(name, "-", years)
+  colnames(tmp) <- c("Region", name_tmp[-1])
+  
+  # return 
+  return(tmp)
+  
+}, files_l, var_names) |> setNames(var_names) -> input_csv
 
-# try stringdist join
-stringdist_join(dat_China, cities, 
-                by = "city", 
-                mode = "inner", 
-                method = "jw", 
-                max_dist = 99, 
-                distance_col = "dist") -> join 
- 
+# merge on Region
+df <- Reduce(\(x, y) merge(x, y, all = TRUE), input_csv)
+
+# compare region names 
+bool <- poly_china$name %in% df[, "Region"]
+poly_china$name[!bool] # Hong Kong and Macao are not part of the china polygon -> exclude
+poly_china$name
+
+# wide to long 
+df %>%
+  gather(key, value, -Region) %>%
+  separate(key, into = c("var", "year"), sep = "-") %>%
+  spread(var, value) -> df_long
+
+# add geometry: left join into polytgon dataset
+tmp_join <- poly_china[, c("name", "geometry")]
+colnames(tmp_join) <- c("Region", "Geom")
+
+# merge left
+df_fin <- merge(as.data.frame(tmp_join), df_long, all = FALSE)
+
+# write final data set 
+# saveRDS(df_fin, "./Data/China_Sourced/rds/dat_long.rds")
+

@@ -59,46 +59,50 @@ ggplot(data = plot_df_sf) +
 df_sf <- st_as_sf(df)
 df_sf <- df_sf[df_sf$year > 2006 & df_sf$year < 2020, ]
 
-# plot HC EXP
-ggplot(data = df_sf) +
-  geom_sf(aes(fill = Health_Care_Expenditures), color = "black") +
-  scale_fill_viridis_c(direction = -1, name = "Expenditure in\nMillions of Yuan", limits = c(20, 1620)) +
-  theme_void() +
-  transition_states(year, transition_length = 1, state_length = 30) +
-  labs(title = "Health Care Expenditure in: {closest_state}.") -> temp_plot
 
-# animate in plot pane 
-gif <- animate(plot = temp_plot,
-               fps = 15,
-               renderer = gifski_renderer(loop = T),
-               height = 4,
-               width = 6, units = "in", res = 175)
 
-# save
-anim_save("./Data/China_Sourced/gifs/HC_exp.gif", gif)
+# gifs 
+map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
 
-# plot sulphur
-mins <- df_sf$Waste_Gas_Emissions_Sulphur |> min()
-maxs <- df_sf$Waste_Gas_Emissions_Sulphur |> max()
+  # min and max for 
+  mins <-  data_inp |> as.data.frame() |> select(var_str) |> min(na.rm = TRUE)
+  maxs <- data_inp |> as.data.frame() |> select(var_str) |> max(na.rm = TRUE)
+  
+  # plot
+  ggplot(data_inp) +
+    geom_sf(aes(fill = .data[[var_str]]), color = "black") +
+    scale_fill_viridis_c(direction = -1, name = title_legend, 
+                         limits = c(mins, maxs)) +
+    theme_void() +
+    transition_states(year, transition_length = 1, state_length = 30) +
+    labs(title = title_main) -> temp_plot
+  
+  # animate in plot pane 
+  gif <- animate(plot = temp_plot,
+                 fps = 15,
+                 renderer = gifski_renderer(loop = T),
+                 height = 4,
+                 width = 6.1, units = "in", res = 200, nframes = 200)
+  
+  # save
+  anim_save(dest, gif)
+  cat("Saved gif!")
+}
 
-# plot
-ggplot(data = df_sf) +
-  geom_sf(aes(fill = Waste_Gas_Emissions_Sulphur), color = "black") +
-  scale_fill_viridis_c(direction = -1, name = "Sulphur Emissions\nin Tousands of Tons", 
-                       limits = c(mins, maxs)) +
-  theme_void() +
-  transition_states(year, transition_length = 1, state_length = 30) +
-  labs(title = "Sulphur Dioxide Emissions: {closest_state}.") -> temp_plot2
 
-# animate in plot pane 
-gif2 <- animate(plot = temp_plot2,
-               fps = 15,
-               renderer = gifski_renderer(loop = T),
-               height = 4,
-               width = 6.1, units = "in", res = 200)
+# map input vectors
+dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp.gif", "sulphur.gif",
+                                                "part_matter.gif", "smoke_dust.gif"))
+titles_legend <- c("Expenditure in\nMillions of Yuan", 
+                 "Sulphur Emissions\nin Thousands of Tons",
+                 "Particular Matter\ninsert unit",
+                 "Smoke and Dust\ninsert unit")
+titles_main <- paste0(c("Health Care Expenditure in:",
+                        "Sulphur Dioxide Emissions:",
+                        "Particular Matter Emissions:",
+                        "Smoke and Dust Emissions:"), " {closest_state}.")
+var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
+         "Waste_Gas_Emissions_Particular_Matter", "Waste_Gas_Emissions_Smoke_and_Dust")
 
-# save
-anim_save("./Data/China_Sourced/gifs/sulphur.gif", gif2)
-
-df_sf$Waste_Gas_Emissions_Sulphur[df_sf$year == 2019] |> sum()
-
+# map over vars
+Map(map_gif, list(df_sf), var, titles_main, titles_legend, dests)

@@ -27,12 +27,38 @@ moran <- spdep::localmoran(df_2019[, "Health_Care_Expenditures"],
 # type I error correction
 moran[, 5] <- p.adjust(moran[, 5], method = "bonferroni")
 
-# merge
-moran <- data.frame(moran)
-moran$Region <- df_2019$Region
-plot_df <- left_join(df_2019, moran)
-plot_df_sf <- st_as_sf(plot_df)
+# morans across years
+df_sf <- df[df$year > 2006 & df$year < 2020, ]
+df_split_year <- split(df_sf, df_sf$year)
 
+lapply(df_split_year, \(df_year){
+
+  # W Matrix KNN
+  coords <- st_coordinates(st_centroid(df_year$Geom))
+  k.near <- spdep::knearneigh(coords, k = 3)
+  k3 <- spdep::knn2nb(k.near)
+  Wlist <- spdep::nb2listw(k3, style = "W")
+
+  # morans I
+  moran <- spdep::localmoran(df_year[, "Health_Care_Expenditures"], 
+                             listw = Wlist, alternative = "two.sided")
+  
+  # type I error correction
+  moran[, 5] <- p.adjust(moran[, 5], method = "bonferroni")
+  
+  # merge
+  moran <- data.frame(moran)
+  moran$Region <- df_year$Region
+ 
+  # return df 
+  left_join(df_year, moran)
+  
+}) -> moran_res_by_year
+
+# link
+df_moran <- do.call(rbind, moran_res_by_year)
+df_sf_moran <- st_as_sf(df_moran)
+  
 # plot
 ggplot(data = plot_df_sf) +
   geom_sf(aes(fill = Ii), color = "black") +
@@ -57,9 +83,6 @@ ggplot(data = plot_df_sf) +
 
 # to sf
 df_sf <- st_as_sf(df)
-df_sf <- df_sf[df_sf$year > 2006 & df_sf$year < 2020, ]
-
-
 
 # gifs 
 map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
@@ -93,16 +116,21 @@ map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
 # map input vectors
 dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp.gif", "sulphur.gif",
                                                 "part_matter.gif", "smoke_dust.gif"))
-titles_legend <- c("Expenditure in\nMillions of Yuan", 
-                 "Sulphur Emissions\nin Thousands of Tons",
-                 "Particular Matter\ninsert unit",
-                 "Smoke and Dust\ninsert unit")
+titles_legend <- c("Expenditure in\n100MM of Yuan", 
+                 "Sulphur Emissions\nin 10K of Tons",
+                 "Particular Matter\nin 10K of Tons",
+                 "Smoke and Dust\nin 10K of Tons")
 titles_main <- paste0(c("Health Care Expenditure in:",
-                        "Sulphur Dioxide Emissions:",
-                        "Particular Matter Emissions:",
-                        "Smoke and Dust Emissions:"), " {closest_state}.")
+                        "Sulphur Dioxide Emissions in:",
+                        "Particular Matter Emissions in:",
+                        "Smoke and Dust Emissions in:"), " {closest_state}.")
 var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
          "Waste_Gas_Emissions_Particular_Matter", "Waste_Gas_Emissions_Smoke_and_Dust")
 
 # map over vars
 Map(map_gif, list(df_sf), var, titles_main, titles_legend, dests)
+
+# morans I plot
+map_gif(df_sf_moran, "li", "Local Moran's I in: {closest_state}.",
+        "Local Moran's I", "./Data/China_Sourced/gifs/local_moran.gif")
+

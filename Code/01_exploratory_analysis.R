@@ -11,24 +11,11 @@ df <- readRDS("./Data/China_Sourced/rds/dat_long.rds")
 # class conversion
 df[, 3:ncol(df)] <- lapply(df[, 3:ncol(df)], as.numeric)
 
-# local morans I in 2021
-df_2019 <- df[df[, "year"] == 2019, ]
-
-# W Matrix KNN
-coords <- st_coordinates(st_centroid(df_2019$Geom))
-k.near <- spdep::knearneigh(coords, k = 3)
-k5 <- spdep::knn2nb(k.near)
-Wlist <- spdep::nb2listw(k5, style = "W")
-
-# morans I
-moran <- spdep::localmoran(df_2019[, "Health_Care_Expenditures"], 
-                           listw = Wlist, alternative = "two.sided")
-
-# type I error correction
-moran[, 5] <- p.adjust(moran[, 5], method = "bonferroni")
-
 # morans across years
-df_cut_years <- df[df$year > 2006 & df$year < 2020, ]
+df_cut_years <- df[df$year >= 2011 & df$year < 2020, ]
+
+# consolidaat eudsrt and particulate matter
+df_cut_years$Waste_Gas_Emissions_Particular_Matter[df_cut_years$year < 2016] <- df_cut_years$Waste_Gas_Emissions_Smoke_and_Dust[df_cut_years$year < 2016]
 df_split_year <- split(df_cut_years, df_cut_years$year)
 
 lapply(df_split_year, \(df_year){
@@ -82,7 +69,7 @@ ggplot(data = plot_df_sf) +
 ## gganimate Health care expenditures ##
 
 # to sf
-df_sf <- st_as_sf(df)
+df_sf <- st_as_sf(df_cut_years)
 
 # gifs 
 map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
@@ -115,17 +102,19 @@ map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
 
 # map input vectors
 dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp.gif", "sulphur.gif",
-                                                "part_matter.gif", "smoke_dust.gif"))
+                                                "part_matter.gif", 
+                                                "nitrogen.gif"))
 titles_legend <- c("Expenditure in\n100MM of Yuan", 
-                 "Sulphur Emissions\nin 10K of Tons",
-                 "Particular Matter\nin 10K of Tons",
-                 "Smoke and Dust\nin 10K of Tons")
+                 "Sulphur Dioxide\nin 10K of Tons",
+                 "Particulate Matter\nin 10K of Tons",
+                 "Nitrogen Oxides\nin 10K of Tons")
 titles_main <- paste0(c("Health Care Expenditure in:",
                         "Sulphur Dioxide Emissions in:",
-                        "Particular Matter Emissions in:",
-                        "Smoke and Dust Emissions in:"), " {closest_state}.")
+                        "Particulate Matter Emissions in:",
+                        "Nitrogen Oxide Emissions in:"), " {closest_state}.")
 var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
-         "Waste_Gas_Emissions_Particular_Matter", "Waste_Gas_Emissions_Smoke_and_Dust")
+         "Waste_Gas_Emissions_Particular_Matter",
+         "Waste_Gas_Emissions_Nitrogen")
 
 # map over vars
 Map(map_gif, list(df_sf), var, titles_main, titles_legend, dests)

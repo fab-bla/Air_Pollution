@@ -28,8 +28,8 @@ moran <- spdep::localmoran(df_2019[, "Health_Care_Expenditures"],
 moran[, 5] <- p.adjust(moran[, 5], method = "bonferroni")
 
 # morans across years
-df_sf <- df[df$year > 2006 & df$year < 2020, ]
-df_split_year <- split(df_sf, df_sf$year)
+df_cut_years <- df[df$year > 2006 & df$year < 2020, ]
+df_split_year <- split(df_cut_years, df_cut_years$year)
 
 lapply(df_split_year, \(df_year){
 
@@ -53,12 +53,12 @@ lapply(df_split_year, \(df_year){
   # return df 
   left_join(df_year, moran)
   
-}) -> moran_res_by_year
+}) -> lst_moran_res_by_year
 
 # link
-df_moran <- do.call(rbind, moran_res_by_year)
-df_sf_moran <- st_as_sf(df_moran)
-  
+df_incl_moran <- do.call(rbind, lst_moran_res_by_year)
+df_sf_moran <- st_as_sf(df_incl_moran)
+
 # plot
 ggplot(data = plot_df_sf) +
   geom_sf(aes(fill = Ii), color = "black") +
@@ -88,8 +88,8 @@ df_sf <- st_as_sf(df)
 map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
 
   # min and max for 
-  mins <-  data_inp |> as.data.frame() |> select(var_str) |> min(na.rm = TRUE)
-  maxs <- data_inp |> as.data.frame() |> select(var_str) |> max(na.rm = TRUE)
+  mins <-  data_inp |> as.data.frame() |> select(all_of(var_str)) |> min(na.rm = TRUE)
+  maxs <- data_inp |> as.data.frame() |> select(all_of(var_str)) |> max(na.rm = TRUE)
   
   # plot
   ggplot(data_inp) +
@@ -131,6 +131,6 @@ var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
 Map(map_gif, list(df_sf), var, titles_main, titles_legend, dests)
 
 # morans I plot
-map_gif(df_sf_moran, "li", "Local Moran's I in: {closest_state}.",
-        "Local Moran's I", "./Data/China_Sourced/gifs/local_moran.gif")
+map_gif(df_sf_moran, "Ii", "Local Moran's I in: {closest_state}.",
+        "Local Moran's I\nKNN, n = 3", "./Data/China_Sourced/gifs/local_moran.gif")
 

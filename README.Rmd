@@ -35,14 +35,9 @@ knitr::include_graphics(c("./Data/China_Sourced/gifs/HC_exp.gif",
 
 # Waste Gas Emissions
 
-<img width="49%" height="20%" src="./Data/China_Sourced/gifs/HC_exp.gif">
-<br clear="both"/>
-<img align = "right" width="49%" height="20%" src="./Data/China_Sourced/gifs/local_moran.gif">
-
-
 ```{r, out.width = "32%", out.height="20%"}
-# knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif", 
-#                           "./Data/China_Sourced/gifs/part_matter.gif",
-#                           "./Data/China_Sourced/gifs/sulphur.gif"))
+knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif",
+                          "./Data/China_Sourced/gifs/part_matter.gif",
+                          "./Data/China_Sourced/gifs/sulphur.gif"))
 ```
 

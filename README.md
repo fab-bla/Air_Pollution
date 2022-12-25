@@ -7,6 +7,4 @@ Air Pollution & Public Healthcare Spending in China
 
 # Waste Gas Emissions
 
-<img width="49%" height="20%" src="./Data/China_Sourced/gifs/HC_exp.gif">
-<br clear="both"/>
-<img align = "right" width="49%" height="20%" src="./Data/China_Sourced/gifs/local_moran.gif">
+<img src="./Data/China_Sourced/gifs/nitrogen.gif" width="32%" height="20%" style="display: block; margin: auto;" /><img src="./Data/China_Sourced/gifs/part_matter.gif" width="32%" height="20%" style="display: block; margin: auto;" /><img src="./Data/China_Sourced/gifs/sulphur.gif" width="32%" height="20%" style="display: block; margin: auto;" />

@@ -2,11 +2,12 @@
 source("./Code/Auxilliary.R")
 
 #  packages
-get.package(c("sf", "osmextract", "fuzzyjoin", "dplyr", "tidyr", "zoo"))
+get.package(c("sf", "osmextract", "fuzzyjoin", "dplyr", "tidyr", "zoo", "rgdal",
+              "maps", "mapdata"))
 
 # load chinese polygon coords
 poly_china <- openstreetmap_fr_zones[which(openstreetmap_fr_zones$parent == "china"), ]
-
+                            
 # files to join 
 files_l <- list.files("./Data/China_sourced/csv", full.names = TRUE)
 names <- list.files("./Data/China_sourced/csv")

@@ -1,0 +1,30 @@
+---
+title: "Air Pollution & Public Healthcare Spending in China"
+output: 
+  github_document:
+    pandoc_args: --webtex
+    toc: False
+    toc_depth: 2
+    number_sections: False
+---
+
+```{r, results = "hide", message = FALSE, warning = FALSE, include = FALSE}
+# knitr options
+knitr::opts_chunk$set(echo = FALSE,
+                      fig.pos = "center",
+                      fig.width = 9,
+                      fig.height = 6,
+                      fig.pos = "H",
+                      dev.args = list(png = list(type = "cairo")),
+                      dpi = 700)
+
+# aux 
+source("./Code/Auxilliary.R")
+
+# packages
+get.package(c("lubridate", "ggplot2"))
+```
+
+```{r}
+knitr::include_graphics("./Data/China_Sourced/gifs/HC_exp.gif")
+```

@@ -35,7 +35,7 @@ knitr::include_graphics(c("./Data/China_Sourced/gifs/HC_exp.gif",
 
 # Waste Gas Emissions
 
-```{r, out.width = "33%", out.height="20%"}
+```{r, out.width = "33.33%", out.height="20%"}
 knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif",
                           "./Data/China_Sourced/gifs/part_matter.gif",
                           "./Data/China_Sourced/gifs/sulphur.gif"))

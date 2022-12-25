@@ -14,7 +14,8 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.pos = "center",
                       fig.width = 9,
                       fig.height = 6,
-                      fig.pos = "H",
+                      fig.show = "hold",
+                      fig.align = "center",
                       dev.args = list(png = list(type = "cairo")),
                       dpi = 700)
 
@@ -27,16 +28,21 @@ get.package(c("lubridate", "ggplot2"))
 
 # Health Care Expenditure
 
-```{r}
+```{r,  out.width = "49%", out.height="20%"}
 knitr::include_graphics(c("./Data/China_Sourced/gifs/HC_exp.gif", 
                           "./Data/China_Sourced/gifs/local_moran.gif"))
 ```
 
 # Waste Gas Emissions
 
-```{r}
-knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif", 
-                          "./Data/China_Sourced/gifs/part_matter.gif",
-                          "./Data/China_Sourced/gifs/sulphur.gif"))
+<img width="49%" height="20%" src="./Data/China_Sourced/gifs/HC_exp.gif">
+<br clear="both"/>
+<img align = "right" width="49%" height="20%" src="./Data/China_Sourced/gifs/local_moran.gif">
+
+
+```{r, out.width = "32%", out.height="20%"}
+# knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif", 
+#                           "./Data/China_Sourced/gifs/part_matter.gif",
+#                           "./Data/China_Sourced/gifs/sulphur.gif"))
 ```
 

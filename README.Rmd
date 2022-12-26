@@ -40,7 +40,6 @@ knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif",
                           "./Data/China_Sourced/gifs/part_matter.gif",
                           "./Data/China_Sourced/gifs/sulphur.gif"))
 ```
-
 ```{r, out.width = "33.33%", out.height="20%"}
 knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen_MI.gif",
                           "./Data/China_Sourced/gifs/part_matter_MI.gif",

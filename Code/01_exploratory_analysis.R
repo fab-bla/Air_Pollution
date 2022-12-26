@@ -3,7 +3,7 @@ source("./Code/Auxilliary.R")
 
 # packages
 get.package(c("ggplot2", "gganimate", "tidyr", 
-              "spdep", "dplyr", "gifski", "gifski"))
+              "spdep", "dplyr", "gifski"))
 
 # data
 df <- readRDS("./Data/China_Sourced/rds/dat_long.rds")
@@ -11,7 +11,7 @@ df <- readRDS("./Data/China_Sourced/rds/dat_long.rds")
 # class conversion
 df[, 3:ncol(df)] <- lapply(df[, 3:ncol(df)], as.numeric)
 
-# morans across years
+# cutoff before corona and remove early yeas because of NAs
 df_cut_years <- df[df$year >= 2011 & df$year < 2020, ]
 
 # consolidaat eudsrt and particulate matter
@@ -25,20 +25,35 @@ lapply(df_split_year, \(df_year){
   k.near <- spdep::knearneigh(coords, k = 3)
   k3 <- spdep::knn2nb(k.near)
   Wlist <- spdep::nb2listw(k3, style = "W")
+  
+  # apply over cols of interest, i.e., Expenditure and emission variables
+  lapply(c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
+           "Waste_Gas_Emissions_Particular_Matter",
+           "Waste_Gas_Emissions_Nitrogen"), \(input_var){
+             
+             # morans I
+             moran <- spdep::localmoran(df_year[, input_var], 
+                                        listw = Wlist, alternative = "two.sided")
+             
+             # type I error correction
+             moran[, 5] <- p.adjust(moran[, 5], method = "bonferroni")
+             
+             # merge
+             moran <- data.frame(moran)
+             moran$Region <- df_year$Region
+        
+             # return local Morans I and Region
+             res <- moran[, c("Ii", "Pr.z....E.Ii..", "Region")]
+             colnames(res)[1:2] <- paste0(c("Ii_", "Pv_"), input_var)
+             return(res)
+            
+           }) -> morans_across_vars
+  
+  # reduce to one df 
+  Iis <- Reduce(\(x, y) merge(x, y, all = TRUE), morans_across_vars)
 
-  # morans I
-  moran <- spdep::localmoran(df_year[, "Health_Care_Expenditures"], 
-                             listw = Wlist, alternative = "two.sided")
-  
-  # type I error correction
-  moran[, 5] <- p.adjust(moran[, 5], method = "bonferroni")
-  
-  # merge
-  moran <- data.frame(moran)
-  moran$Region <- df_year$Region
- 
   # return df 
-  left_join(df_year, moran)
+  left_join(df_year, Iis)
   
 }) -> lst_moran_res_by_year
 
@@ -47,29 +62,26 @@ df_incl_moran <- do.call(rbind, lst_moran_res_by_year)
 df_sf_moran <- st_as_sf(df_incl_moran)
 
 # plot
-ggplot(data = plot_df_sf) +
-  geom_sf(aes(fill = Ii), color = "black") +
-  ggtitle("Local Moran's I", subtitle = "Health Care Expenditure 2019") +
-  scale_fill_viridis_c(direction = -1, name = "Local Moran's I") +
-  theme_void()
+# ggplot(data = plot_df_sf) +
+#   geom_sf(aes(fill = Ii), color = "black") +
+#   ggtitle("Local Moran's I", subtitle = "Health Care Expenditure 2019") +
+#   scale_fill_viridis_c(direction = -1, name = "Local Moran's I") +
+#   theme_void()
 
 # ggsave 
 # ggsave("./Data/China_Sourced/plots/moran_2019.pdf")
 
 # plot
-ggplot(data = plot_df_sf) +
-  geom_sf(aes(fill = Health_Care_Expenditures), color = "black") +
-  ggtitle("Health Care Expenditure", subtitle = "in millions of Yuan") +
-  scale_fill_viridis_c(direction = -1, name = "Expenditure", limits = c(20, 1620)) +
-  theme_void()
+# ggplot(data = plot_df_sf) +
+#   geom_sf(aes(fill = Health_Care_Expenditures), color = "black") +
+#   ggtitle("Health Care Expenditure", subtitle = "in millions of Yuan") +
+#   scale_fill_viridis_c(direction = -1, name = "Expenditure", limits = c(20, 1620)) +
+#   theme_void()
 
 # ggsave 
 # ggsave("./Data/China_Sourced/plots/HCE_2019.pdf")
 
-## gganimate Health care expenditures ##
-
-# to sf
-df_sf <- st_as_sf(df_cut_years)
+## gganimate variables and their spatial interaction ##
 
 # gifs 
 map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
@@ -103,21 +115,31 @@ map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
 # map input vectors
 dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp.gif", "sulphur.gif",
                                                 "part_matter.gif", 
-                                                "nitrogen.gif"))
+                                                "nitrogen.gif", "HC_exp_MI.gif",
+                                                "sulphur_MI.gif", "part_matter_MI.gif", 
+                                                "nitrogen_MI.gif"))
 titles_legend <- c("Expenditure in\n100MM of Yuan", 
-                 "Sulphur Dioxide\nin 10K of Tons",
-                 "Particulate Matter\nin 10K of Tons",
-                 "Nitrogen Oxides\nin 10K of Tons")
+                   "Sulphur Dioxide\nin 10K of Tons",
+                   "Particulate Matter\nin 10K of Tons",
+                   "Nitrogen Oxides\nin 10K of Tons",
+                   rep("Local Moran's I\nKNN, n = 3", 4))
+
 titles_main <- paste0(c("Health Care Expenditure in:",
                         "Sulphur Dioxide Emissions in:",
                         "Particulate Matter Emissions in:",
-                        "Nitrogen Oxide Emissions in:"), " {closest_state}.")
+                        "Nitrogen Oxide Emissions in:",
+                        paste0("Local Moran's I for ", c("Health Care Expenditure",
+                                                         "Sulphur Dioxide",
+                                                         "Particulate Matter", 
+                                                         "Nitrogen Oxides"), " in:")), " {closest_state}.")
+
 var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
          "Waste_Gas_Emissions_Particular_Matter",
          "Waste_Gas_Emissions_Nitrogen")
+var <- c(var, paste0("Ii_", var))
 
 # map over vars
-Map(map_gif, list(df_sf), var, titles_main, titles_legend, dests)
+Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)
 
 # morans I plot
 map_gif(df_sf_moran, "Ii", "Local Moran's I in: {closest_state}.",

@@ -26,14 +26,14 @@ source("./Code/Auxilliary.R")
 get.package(c("lubridate", "ggplot2"))
 ```
 
-# Health Care Expenditure
+## Health Care Expenditure
 
 ```{r,  out.width = "50%", out.height="20%"}
 knitr::include_graphics(c("./Data/China_Sourced/gifs/HC_exp.gif", 
-                          "./Data/China_Sourced/gifs/local_moran.gif"))
+                          "./Data/China_Sourced/gifs/HC_exp_MI.gif"))
 ```
 
-# Waste Gas Emissions
+## Waste Gas Emissions
 
 ```{r, out.width = "33.33%", out.height="20%"}
 knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif",
@@ -41,3 +41,8 @@ knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif",
                           "./Data/China_Sourced/gifs/sulphur.gif"))
 ```
 
+```{r, out.width = "33.33%", out.height="20%"}
+knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen_MI.gif",
+                          "./Data/China_Sourced/gifs/part_matter_MI.gif",
+                          "./Data/China_Sourced/gifs/sulphur_MI.gif"))
+```

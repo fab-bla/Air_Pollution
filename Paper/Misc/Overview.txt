@@ -1,0 +1,28 @@
+0 - Abstract []
+1 - Introduction 
+	- Relevance
+	- intro to chinese health care system [Lejla]
+		- do people travel to other provinces
+		- share of private spending 
+		- most important illnesses in regard to death toll [Max]
+2 - Literature 
+	- Channels
+	- describe link and difference to main paper
+	- some more papers to map air pollution to certain illnesses [Max]
+3 - Data & Method
+	- Missing Data 
+		- Age of Population [Max]
+		- Health of pop. (life expectancy as control?) 
+	- Exploratory Analysis [Fabian]
+		- exchange W matrix for inverse distance and compare
+		- Changes of spatial correlation over time?
+		- breaks in the time series - changes in policy?
+	- Descriptives
+	- Methods 
+		- W Matrix
+		- Model
+		- Testing Structure -> how did we get to the model? [Martin]
+4 - Results
+5 - Conclusion
+-----------------------------------------------------------------------------------------------------
+Setup LaTeX File for paper [Fabian]

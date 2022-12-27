@@ -141,7 +141,3 @@ var <- c(var, paste0("Ii_", var))
 # map over vars
 Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)
 
-# morans I plot
-map_gif(df_sf_moran, "Ii", "Local Moran's I in: {closest_state}.",
-        "Local Moran's I\nKNN, n = 3", "./Data/China_Sourced/gifs/local_moran.gif")
-

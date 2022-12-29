@@ -1,0 +1,30 @@
+---
+title: "manip"
+author: "Fabian Blasch"
+date: "2022-12-29"
+output: pdf_document
+---
+
+```{r}
+# filenames
+lst_files <- list.files(pattern = ".csv")
+
+lst_files
+# colnames load
+cnames <- read.csv2(lst_files[1])[, 1]
+
+# load
+data_sets <- lapply(lst_files, \(file) read.csv2(file)[, -1] |> as.matrix())
+
+# divide
+Map(\(mat, writename){
+  
+ # bind and calc
+ tmp <- cbind("Region" = cnames, mat / (data_sets[[1]]) * 100)
+ 
+ # write to csv
+ write.csv2(tmp, paste0("./../", writename), row.names = FALSE)
+ 
+}, tail(data_sets, 3), tail(lst_files, 3))
+```
+

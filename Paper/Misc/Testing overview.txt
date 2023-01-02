@@ -1,0 +1,65 @@
+-Testing structure overview-
+
+In general the idea is I think that we always need to take care of other factors if we test, because the error term will be different.
+
+Only spatial dependence:
+slmtest (Anselin LM test - only for pooled data or fixed effect: model="within")
+
+For example:
+
+slmtest(fm, data=Produc, listw=usalw, test="lml") #SAR
+
+slmtest(fm, data=Produc, listw=usalw, test="lme") #SEM
+
+Robust versions (both significant):
+slmtest(fm, data=Produc, listw=usalw, test="rlml") #spatial lag given an error
+
+slmtest(fm, data=Produc, listw=usalw, test="rlme") #spatial error given lag
+--------
+To test whether Fixed Effects or Random Effects fits better --> Spatial Hausmann Test:
+sphtest
+
+#The alternative hypothesis is that one model is inconsistent (the RE model), so if this is the case, use the FE estimator.
+For example:
+
+sphtest(x=fm, data=Produc, listw=usalw, 
+                  spatial.model="error", method="ML") #SEM
+               
+sphtest(x=fm, data=Produc, listw=usalw, 
+                  spatial.model="lag", method="ML") #SAR
+                  
+sphtest(x=fm, data=Produc, listw=usalw, 
+                     spatial.model="sarar", method="ML") #SEM + SAR
+                     
+We could use this if we first test for the model and then decide whether RE or FE.
+--------
+Combined Tests (without serial correlation):
+bsktest
+
+For example:
+
+bsktest(x=fm, data=Produc, listw=usalw, test="LMH") #RE and spatial correlation non-zero?
+
+bsktest(x=fm, data=Produc, listw=usalw, test="LM1") #Assuming no spatial corr. - RE?
+
+bsktest(x=fm, data=Produc, listw=usalw, test="LM2") #Assuming no RE - spatial corr.?
+
+bsktest(x=fm, data=Produc, listw=usalw, test="CLMlambda") #Is there spatial correlation given the possibility of RE?
+
+bsktest(x=fm, data=Produc, listw=usalw, test="CLMmu") #Are there RE, given the possibility of spatial correlation?
+--------
+Combined Tests with serial correlation:
+bsjktest
+
+"However way more problematic in large N/small T datasets." -Tutorial
+So we should probably test for it.
+
+For example:
+
+bsjktest(x=fm, data=Produc, listw=usalw, test="J") #RE, spatial or serial correlation non-zero?
+
+bsjktest(x=fm, data=Produc, listw=usalw, test="C.1") #Assuming serial corr. and RE - spatial corr.?
+
+bsjktest(x=fm, data=Produc, listw=usalw, test="C.2") # Assuming spatial corr. and RE - serial corr.?
+
+bsjktest(x=fm, data=Produc, listw=usalw, test="C.3") #Assuming spatial corr. and serial corr. - RE?

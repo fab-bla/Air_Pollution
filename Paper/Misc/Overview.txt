@@ -6,7 +6,7 @@
 		- share of private spending 
 		- most important illnesses in regard to death toll [Max]
 2 - Literature 
-	- Channels
+	- Channels (for a DAG we can use the ggdag package)
 	- describe link and difference to main paper
 	- some more papers to map air pollution to certain illnesses [Max]
 3 - Data & Method

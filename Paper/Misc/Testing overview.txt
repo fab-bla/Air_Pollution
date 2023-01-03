@@ -1,6 +1,6 @@
 -Testing structure overview-
 
-In general the idea is I think that we always need to take care of other factors if we test, because the error term will be different.
+In general the idea is (I think) that we always need to take care of other factors in the error term.
 
 Only spatial dependence:
 slmtest (Anselin LM test - only for pooled data or fixed effect: model="within")

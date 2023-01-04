@@ -3,7 +3,7 @@ source("./Code/Auxilliary.R")
 
 # packages
 get.package(c("ggplot2", "gganimate", "tidyr", 
-              "spdep", "dplyr", "gifski"))
+              "spdep", "dplyr", "gifski", "SDPDmod"))
 
 # data
 df <- readRDS("./Data/China_Sourced/rds/dat_long.rds")
@@ -21,11 +21,20 @@ df_split_year <- split(df_cut_years, df_cut_years$year)
 lapply(df_split_year, \(df_year){
 
   # W Matrix KNN
-  coords <- st_coordinates(st_centroid(df_year$Geom))
-  k.near <- spdep::knearneigh(coords, k = 3)
-  k3 <- spdep::knn2nb(k.near)
-  Wlist <- spdep::nb2listw(k3, style = "W")
+  # coords <- st_coordinates(st_centroid(df_year$Geom))
+  # k.near <- spdep::knearneigh(coords, k = 3)
+  # k3 <- spdep::knn2nb(k.near)
+  # Wlist <- spdep::nb2listw(k3, style = "W")
   
+  # W matrix inverse distance
+  coords <- st_coordinates(st_centroid(df_year$Geom))
+  k1 <- knn2nb(knearneigh(coords))
+  critical.threshold <- max(unlist(nbdists(k1, coords)))
+  nb.dist.band <- dnearneigh(coords, 0, critical.threshold)
+  distances <- nbdists(nb.dist.band,coords)
+  invd1 <- lapply(distances, \(x) (1 / x))
+  Wlist <- nb2listw(nb.dist.band,glist = invd1, style = "B")
+
   # apply over cols of interest, i.e., Expenditure and emission variables
   lapply(c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
            "Waste_Gas_Emissions_Particular_Matter",
@@ -111,8 +120,7 @@ map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
   cat("Saved gif!")
 }
 
-
-# map input vectors
+# Gifs of timeseries as well as gifs of Moran's I with KNN #
 dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp.gif", "sulphur.gif",
                                                 "part_matter.gif", 
                                                 "nitrogen.gif", "HC_exp_MI.gif",
@@ -122,7 +130,7 @@ titles_legend <- c("Expenditure in\n100MM of Yuan",
                    "Sulphur Dioxide\nin 10K of Tons",
                    "Particulate Matter\nin 10K of Tons",
                    "Nitrogen Oxides\nin 10K of Tons",
-                   rep("Local Moran's I\nKNN, n = 3", 4))
+                   rep("Local Moran's I\nInverse Distance", 4))
 
 titles_main <- paste0(c("Health Care Expenditure in:",
                         "Sulphur Dioxide Emissions in:",
@@ -136,8 +144,29 @@ titles_main <- paste0(c("Health Care Expenditure in:",
 var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
          "Waste_Gas_Emissions_Particular_Matter",
          "Waste_Gas_Emissions_Nitrogen")
+
 var <- c(var, paste0("Ii_", var))
 
 # map over vars
 Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)
 
+################################INVERSE DISTANCE###############################################
+dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp_MI_ID.gif",
+                                                "sulphur_MI_ID.gif", "part_matter_MI_ID.gif", 
+                                                "nitrogen_MI_ID.gif"))
+
+titles_legend <- c(rep("Local Moran's I\nInverse Distance", 4))
+
+titles_main <- paste0(c(paste0("Local Moran's I for ", c("Health Care Expenditure",
+                                                         "Sulphur Dioxide",
+                                                         "Particulate Matter", 
+                                                         "Nitrogen Oxides"), " in:")), " {closest_state}.")
+
+var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
+         "Waste_Gas_Emissions_Particular_Matter",
+         "Waste_Gas_Emissions_Nitrogen")
+
+var <- paste0("Ii_", var)
+
+# map over vars
+Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)

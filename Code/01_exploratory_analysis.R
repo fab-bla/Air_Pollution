@@ -16,8 +16,14 @@ df_cut_years <- df[df$year >= 2011 & df$year < 2020, ]
 
 # consolidaat eudsrt and particulate matter
 df_cut_years$Waste_Gas_Emissions_Particular_Matter[df_cut_years$year < 2016] <- df_cut_years$Waste_Gas_Emissions_Smoke_and_Dust[df_cut_years$year < 2016]
+
+# write corrected dataset
+# saveRDS(df_cut_years, "./Data/China_Sourced/rds/df_cut_years.rds")
+
+# split 
 df_split_year <- split(df_cut_years, df_cut_years$year)
 
+# loop over dataset split by year
 lapply(df_split_year, \(df_year){
 
   # W Matrix KNN
@@ -33,7 +39,7 @@ lapply(df_split_year, \(df_year){
   nb.dist.band <- dnearneigh(coords, 0, critical.threshold)
   distances <- nbdists(nb.dist.band,coords)
   invd1 <- lapply(distances, \(x) (1 / x))
-  Wlist <- nb2listw(nb.dist.band,glist = invd1, style = "B")
+  Wlist <- nb2listw(nb.dist.band, glist = invd1, style = "B")
 
   # apply over cols of interest, i.e., Expenditure and emission variables
   lapply(c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",

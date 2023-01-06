@@ -1,0 +1,21 @@
+TO DO and NOTES:
+
+-Testing problem with slmtest
+
+-Testing structure (also with heteroscedasticity)
+
+-W Matrix - inverse distance band, contiguity?
+
+-Which variables in the model?
+
+-Share of Age in a province ok?
+
+-Go through R Code
+
+-distinction between rural and urban important due to differences in health care system
+
+-environmental policy changes china
+
+-structural change in the health care system?
+	-What changes?
+

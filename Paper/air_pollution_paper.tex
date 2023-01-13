@@ -56,6 +56,13 @@
 \usepackage{float}
 \usepackage{titling}
 \usepackage{xcolor}
+\usepackage[
+backend=biber,
+natbib=true,
+language = english,
+doi = false, url = false, isbn = false, eprint = false,
+style = apa]
+{biblatex}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -66,6 +73,9 @@
   pdfauthor={Group II},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
+
+\DeclareLanguageMapping{english}{english-apa}
+\addbibresource{references.bib}
 
 \title{The Price Air Pollution\\
 1436 - Spatial Economics}
@@ -84,5 +94,5 @@
 
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
-
+lorem ipsum \citep{R}
 \end{document}

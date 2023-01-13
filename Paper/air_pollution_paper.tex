@@ -55,6 +55,13 @@
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{titling}
+\usepackage[
+backend=biber,
+natbib=true,
+language = english,
+doi = false, url = false, isbn = false, eprint = false,
+style = apa]
+{biblatex}
 \usepackage{xcolor}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -66,6 +73,9 @@
   pdfauthor={Group II},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
+
+\DeclareLanguageMapping{english}{english-apa}
+\addbibresource{literature.bib}
 
 \title{The Price Air Pollution\\
 1436 - Spatial Economics}

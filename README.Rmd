@@ -29,19 +29,19 @@ get.package(c("lubridate", "ggplot2"))
 ## Health Care Expenditure
 
 ```{r,  out.width = "50%", out.height="20%"}
-knitr::include_graphics(c("./Data/China_Sourced/gifs/HC_exp.gif", 
-                          "./Data/China_Sourced/gifs/HC_exp_MI.gif"))
+knitr::include_graphics(c("./Data/China_Sourced/gifs/HC_exp_newM.gif", 
+                          "./Data/China_Sourced/gifs/HC_exp_MI_newM.gif"))
 ```
 
 ## Waste Gas Emissions
 
 ```{r, out.width = "33.33%", out.height="20%"}
-knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen.gif",
-                          "./Data/China_Sourced/gifs/part_matter.gif",
-                          "./Data/China_Sourced/gifs/sulphur.gif"))
+knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen_newM.gif",
+                          "./Data/China_Sourced/gifs/part_matter_newM.gif",
+                          "./Data/China_Sourced/gifs/sulphur_newM.gif"))
 ```
 ```{r, out.width = "33.33%", out.height="20%"}
-knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen_MI.gif",
-                          "./Data/China_Sourced/gifs/part_matter_MI.gif",
-                          "./Data/China_Sourced/gifs/sulphur_MI.gif"))
+knitr::include_graphics(c("./Data/China_Sourced/gifs/nitrogen_MI_newM.gif",
+                          "./Data/China_Sourced/gifs/part_matter_MI_newM.gif",
+                          "./Data/China_Sourced/gifs/sulphur_MI_newM.gif"))
 ```

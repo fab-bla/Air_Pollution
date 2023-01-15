@@ -26,7 +26,7 @@ node [shape=plaintext
       fillcolor=lightgrey] #color = to change the color of the frame
 A [label='Air Pollution'] 
 B 
-C
+C 
 D 
 E
 

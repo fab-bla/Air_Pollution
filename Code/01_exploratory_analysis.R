@@ -3,7 +3,7 @@ source("./Code/Auxilliary.R")
 
 # packages
 get.package(c("ggplot2", "gganimate", "tidyr", 
-              "spdep", "dplyr", "gifski", "SDPDmod"))
+              "spdep", "dplyr", "gifski", "SDPDmod", "geojson", "sf"))
 
 # data
 df <- readRDS("./Data/China_Sourced/rds/dat_long.rds")
@@ -16,30 +16,68 @@ df_cut_years <- df[df$year >= 2011 & df$year < 2020, ]
 
 # consolidaat eudsrt and particulate matter
 df_cut_years$Waste_Gas_Emissions_Particular_Matter[df_cut_years$year < 2016] <- df_cut_years$Waste_Gas_Emissions_Smoke_and_Dust[df_cut_years$year < 2016]
+##############################fix broken polygon#################################
+# read shape
+geom_new <- st_read("./Data/China_Sourced/shp")
+
+# unique names
+pb <- df_cut_years$Region |> unique()
+
+# ind for assignment
+ind2 <- geom_new$NAME_1 %in% pb
+
+# correct names 
+geom_new$NAME_1[!ind2] <- c("Inner Mongolia", "Ningxia", "Xinjiang", "Tibet")
+
+# pick names and geom
+geom_new <- geom_new[, c("NAME_1", "geometry")]
+colnames(geom_new) <- c("Region", "Geom_alt")
+
+# remove hainan
+ind <- df_cut_years[, "Region"] != "Hainan"
+df_cut_years <- df_cut_years[ind, ]
+
+# merge 
+df_cut_years <- merge(df_cut_years, geom_new, all.x = TRUE)
+df_cut_years_W <- df_cut_years 
+df_cut_years_W[, "Geom"] <- NULL
+df_cut_years[, "Geom_alt"] <- NULL
+
+################################################################################
+
+# find W matrix conti
+df_W <- df_cut_years_W[df_cut_years_W$year == 2018, ]
+
+## contiguity ## 
+# queen_nb <- poly2nb(df_W$Geom_alt)
+queen_nb <- readRDS("./Data/China_Sourced/rds/queen_nb.rds")
+Wlist <- spdep::nb2listw(queen_nb, style = "W")
+
+## W Matrix KNN ##
+# coords <- st_coordinates(st_centroid(df_year$Geom))
+# k.near <- spdep::knearneigh(coords, k = 3)
+# k3 <- spdep::knn2nb(k.near)
+# Wlist <- spdep::nb2listw(k3, style = "W")
+
+## W matrix inverse distance ##
+# coords <- st_coordinates(st_centroid(df_year$Geom))
+# k1 <- knn2nb(knearneigh(coords))
+# critical.threshold <- max(unlist(nbdists(k1, coords)))
+# nb.dist.band <- dnearneigh(coords, 0, critical.threshold)
+# distances <- nbdists(nb.dist.band,coords)
+# invd1 <- lapply(distances, \(x) (1 / x))
+# Wlist <- nb2listw(nb.dist.band, glist = invd1, style = "B")
 
 # write corrected dataset
-# saveRDS(df_cut_years, "./Data/China_Sourced/rds/df_cut_years.rds")
+# saveRDS(df_cut_years_W, "./Data/China_Sourced/rds/df_cut_yeats_alt_W.rds") # new geom no hainan
+# saveRDS(df_cut_years, "./Data/China_Sourced/rds/df_cut_yeats_W.rds") # old geom for plotting no hainan
+# saveRDS(queen_nb, "./Data/China_Sourced/rds/queen_nb.rds") # queen contiguity object
 
 # split 
 df_split_year <- split(df_cut_years, df_cut_years$year)
 
 # loop over dataset split by year
 lapply(df_split_year, \(df_year){
-
-  # W Matrix KNN
-  # coords <- st_coordinates(st_centroid(df_year$Geom))
-  # k.near <- spdep::knearneigh(coords, k = 3)
-  # k3 <- spdep::knn2nb(k.near)
-  # Wlist <- spdep::nb2listw(k3, style = "W")
-  
-  # W matrix inverse distance
-  coords <- st_coordinates(st_centroid(df_year$Geom))
-  k1 <- knn2nb(knearneigh(coords))
-  critical.threshold <- max(unlist(nbdists(k1, coords)))
-  nb.dist.band <- dnearneigh(coords, 0, critical.threshold)
-  distances <- nbdists(nb.dist.band,coords)
-  invd1 <- lapply(distances, \(x) (1 / x))
-  Wlist <- nb2listw(nb.dist.band, glist = invd1, style = "B")
 
   # apply over cols of interest, i.e., Expenditure and emission variables
   lapply(c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
@@ -127,16 +165,16 @@ map_gif <- \(data_inp, var_str, title_main, title_legend, dest){
 }
 
 # Gifs of timeseries as well as gifs of Moran's I with KNN #
-dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp.gif", "sulphur.gif",
-                                                "part_matter.gif", 
-                                                "nitrogen.gif", "HC_exp_MI.gif",
-                                                "sulphur_MI.gif", "part_matter_MI.gif", 
-                                                "nitrogen_MI.gif"))
+dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp_newM.gif", "sulphur_newM.gif",
+                                                "part_matter_newM.gif", 
+                                                "nitrogen_newM.gif", "HC_exp_MI_newM.gif",
+                                                "sulphur_MI_newM.gif", "part_matter_MI_newM.gif", 
+                                                "nitrogen_MI_newM.gif"))
 titles_legend <- c("Expenditure in\n100MM of Yuan", 
                    "Sulphur Dioxide\nin 10K of Tons",
                    "Particulate Matter\nin 10K of Tons",
                    "Nitrogen Oxides\nin 10K of Tons",
-                   rep("Local Moran's I\nInverse Distance", 4))
+                   rep("Local Moran's I\nQueen Contiguity", 4))
 
 titles_main <- paste0(c("Health Care Expenditure in:",
                         "Sulphur Dioxide Emissions in:",
@@ -155,13 +193,32 @@ var <- c(var, paste0("Ii_", var))
 
 # map over vars
 Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)
-
 ################################INVERSE DISTANCE###############################################
 dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp_MI_ID.gif",
                                                 "sulphur_MI_ID.gif", "part_matter_MI_ID.gif", 
                                                 "nitrogen_MI_ID.gif"))
 
 titles_legend <- c(rep("Local Moran's I\nInverse Distance", 4))
+
+titles_main <- paste0(c(paste0("Local Moran's I for ", c("Health Care Expenditure",
+                                                         "Sulphur Dioxide",
+                                                         "Particulate Matter", 
+                                                         "Nitrogen Oxides"), " in:")), " {closest_state}.")
+
+var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
+         "Waste_Gas_Emissions_Particular_Matter",
+         "Waste_Gas_Emissions_Nitrogen")
+
+var <- paste0("Ii_", var)
+
+# map over vars
+Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)
+################################### Contiguity ##################################################
+dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp_MI_cont.gif",
+                                                "sulphur_MI_cont.gif", "part_matter_MI_cont.gif", 
+                                                "nitrogen_MI_cont.gif"))
+
+titles_legend <- c(rep("Local Moran's I\nQueen Contiguity", 4))
 
 titles_main <- paste0(c(paste0("Local Moran's I for ", c("Health Care Expenditure",
                                                          "Sulphur Dioxide",

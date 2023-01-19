@@ -5,7 +5,7 @@ source("./Code/Auxilliary.R")
 get.package(c("splm", "spatialreg", "Ecdat", "spdep"))
 
 # data
-df <- readRDS("./Data/China_Sourced/rds/df_cut_years.rds")
+df <- readRDS("./Data/China_Sourced/rds/df_cut_yeats_alt_W.rds")
 ind <- df[, "Region"] != "Hainan"
 df <- df[ind, ]
 
@@ -25,25 +25,25 @@ df <- df[ind, ]
 # Wlist <- spdep::nb2listw(k3, style = "W")
 
 # W matrix queen contiguity
-queen_nb <- poly2nb(df$Geom)
+queen_nb <- readRDS("./Data/China_Sourced/rds/queen_nb.rds")
 Wlist <- spdep::nb2listw(queen_nb, style = "W")
 
 # model df without geom
-df_model <- df[, -2]
+df$Geom_alt <- NULL 
 
 # build indices
-!colnames(df_model) %in% c("Region", "Geom", "year", "Number_of_Beds_in_Health_Care_Institutions",
+!colnames(df) %in% c("Region", "Geom", "year", "Number_of_Beds_in_Health_Care_Institutions",
                            "Number_of_Beds_in_Hospitals", "Number_of_Health_Care_Institutions", "Number_of_Medical_Personell",
                            "Sample_population_of_age_15_65", "Waste_Gas_Emissions_Smoke_and_Dust", "CPI_Health_Care",
                            "Health_Care_Expenditures") -> incl_ind
 # NAs
-sapply(df_model, \(cols) complete.cases(cols) |> all()) -> miss_ind
-df_model[, "Population_affected_by_Naural_Desasters"] |> is.na() -> ind
+sapply(df, \(cols) complete.cases(cols) |> all()) -> miss_ind
+df[, "Population_affected_by_Naural_Desasters"] |> is.na() -> ind
 
 # build formula
-fml <- paste("Health_Care_Expenditures ~", paste(colnames(df_model)[incl_ind & miss_ind], collapse = " + ")) |> as.formula()
+fml <- paste("Health_Care_Expenditures ~", paste(colnames(df)[incl_ind & miss_ind], collapse = " + ")) |> as.formula()
 
 # first test
-slmlag <- splm::slmtest(fml, data = df_model, listw = Wlist, test = "lml")
+slmlag <- splm::slmtest(fml, data = df, listw = Wlist, test = "lml")
 
 

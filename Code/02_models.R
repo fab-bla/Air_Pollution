@@ -1,3 +1,5 @@
+rm(list=ls())
+
 # source
 source("./Code/Auxilliary.R")
 
@@ -53,13 +55,16 @@ fml <- paste("Health_Care_Expenditures ~", paste(colnames(df_panel)[incl_ind & m
 slmlag <- splm::slmtest(fml, data = df_panel, listw = Wlist, test = "lme", model = "within")
 
 # panel SLX
-panel_SLX <- plm::plm(fml, data = df_panel, effect = "twoways", model = "within")
+panel_SLX <- plm::plm(fml, data = df_panel, effect = "individual", model = "within") #individual because we include the effect of the provinces in the model after demeaning over time https://www.wu.ac.at/fileadmin/wu/d/i/iqv/Gstach/Artikel/Croissant__2008_.pdf
 
 # summary
 panel_SLX |> summary()
 
 # residuen
-panel_SLX$residuals |> plot()
+panel_SLX$residuals |> plot()+
+
+  
+pdwtest(panel_SLX)#test for serial correlation #significant
 
 # spatial error | fixed effects 
   # yes

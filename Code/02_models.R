@@ -24,8 +24,7 @@ df_lag <- df_panel[, c("Waste_Gas_Emissions_Nitrogen",  "Waste_Gas_Emissions_Par
                        "Waste_Gas_Emissions_Sulphur", "Disposable_Income_per_Capita_Rural", "Disposable_Income_per_Capita_Urban")]
 
 #  apply over rel. vars
-lapply(as.list(df_lag, keep.attributes = TRUE), 
-       \(col){
+lapply(as.list(df_lag, keep.attributes = TRUE), \(col){
          
          # get lagged version 
          splm::slag(col, Wlist)

@@ -38,9 +38,9 @@ df_panel <- cbind(df_panel, lagged_vars) |> plm::pdata.frame(index = c("Region",
 # build indices
 !colnames(df_panel) %in% c("Region", "Geom", "year", "Number_of_Beds_in_Health_Care_Institutions",
                      "Number_of_Beds_in_Hospitals", "Number_of_Health_Care_Institutions", "Number_of_Medical_Personell",
-                     "Sample_population_of_age_15_65", "Waste_Gas_Emissions_Smoke_and_Dust", "CPI_Health_Care",
+                     "Sample_population_of_age_0_14", "Sample_population_of_age_65_and_older", "Waste_Gas_Emissions_Smoke_and_Dust", "CPI_Health_Care",
                      "Health_Care_Expenditures", "Consumer_Price_Index", "Disposable_Income_per_Capita",
-                     "Gross_regional_product", "Total_Gov._Expenditure") -> incl_ind
+                     "Gross_regional_product", "Total_Gov._Expenditure", "Waste_Gas_Emissions_Nitrogen_lag", "Waste_Gas_Emissions_Particular_Matter_lag") -> incl_ind
 # NAs
 sapply(df_panel, \(cols) complete.cases(cols) |> all()) -> miss_ind
 df_panel[, "Population_affected_by_Naural_Desasters"] |> is.na() -> ind
@@ -71,4 +71,9 @@ lmtest::bptest(panel_SLX)#Breusch-Pagan for heteroscedasticity
 rVCV <- plm::vcovHC(panel_SLX, method = "arellano")
 
 # coeftest
-lmtest::coeftest(x = panel_SLX, vcov = plm::vcovHC(panel_SLX, method = "arellano"))
+corrected_res <- lmtest::coeftest(x = panel_SLX, vcov = rVCV)
+
+# table
+stargazer::stargazer(corrected_res)
+
+

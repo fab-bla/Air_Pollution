@@ -1,6 +1,5 @@
 # source
 source("./Code/Auxilliary.R")
-
 # packages
 get.package(c("splm", "spatialreg", "Ecdat", "spdep", "lmtest"))
 
@@ -8,6 +7,12 @@ get.package(c("splm", "spatialreg", "Ecdat", "spdep", "lmtest"))
 df <- readRDS("./Data/China_Sourced/rds/df_cut_yeats_alt_W.rds")
 ind <- df[, "Region"] != "Hainan"
 df <- df[ind, ]
+#Inflation Adjustment
+#Divide monetary variable by CPI/100 (because changes are in hundreds)
+colnames(df) %in% c("Disposable_Income_per_Capita", "Disposable_Income_per_Capita_Rural","Disposable_Income_per_Capita_Urban",
+                    "Gross_regional_product","Health_Care_Expenditures", "Total_Gov._Expenditure")->num.var.index
+
+df[num.var.index]<-lapply(df[num.var.index],\(num.var){num.var/(df$Consumer_Price_Index/100)})
 
 # W matrix queen contiguity
 queen_nb <- readRDS("./Data/China_Sourced/rds/queen_nb.rds")
@@ -40,7 +45,8 @@ df_panel <- cbind(df_panel, lagged_vars) |> plm::pdata.frame(index = c("Region",
                      "Number_of_Beds_in_Hospitals", "Number_of_Health_Care_Institutions", "Number_of_Medical_Personell",
                      "Sample_population_of_age_0_14", "Sample_population_of_age_65_and_older", "Waste_Gas_Emissions_Smoke_and_Dust", "CPI_Health_Care",
                      "Health_Care_Expenditures", "Consumer_Price_Index", "Disposable_Income_per_Capita",
-                     "Gross_regional_product", "Total_Gov._Expenditure", "Waste_Gas_Emissions_Nitrogen_lag", "Waste_Gas_Emissions_Particular_Matter_lag") -> incl_ind
+                     "Gross_regional_product", "Total_Gov._Expenditure", "Waste_Gas_Emissions_Nitrogen_lag") -> incl_ind
+#
 # NAs
 sapply(df_panel, \(cols) complete.cases(cols) |> all()) -> miss_ind
 df_panel[, "Population_affected_by_Naural_Desasters"] |> is.na() -> ind
@@ -51,29 +57,29 @@ fml <- paste("Health_Care_Expenditures ~", paste(colnames(df_panel)[incl_ind & m
 # first test
 slmlag <- splm::slmtest(fml, data = df_panel, listw = Wlist, test = "lme", model = "within")
 
-# panel SLX
+# panel SLX and SDE
 panel_SLX <- plm::plm(fml, data = df_panel, effect = "individual", model = "within") #individual because we include the effect of the provinces in the model after demeaning over time https://www.wu.ac.at/fileadmin/wu/d/i/iqv/Gstach/Artikel/Croissant__2008_.pdf
-
+panel_SDE<- splm::spml(fml, data=df_panel,  effect = "individual", model = "within", lag = FALSE, spatial.error = "kkp", listw = Wlist)
 # summary
 panel_SLX |> summary()
-
+panel_SDE |> summary()
 # residuen
 panel_SLX$residuals |> plot()
+panel_SDE$residuals |> plot()
 
+#BP and PDW
 plm::pdwtest(panel_SLX)#test for serial correlation #significant
+
 lmtest::bptest(panel_SLX)#Breusch-Pagan for heteroscedasticity
-# spatial error | fixed effects 
-  # yes
-    # serial correlation
-      # y/n
 
 #VCV
 rVCV <- plm::vcovHC(panel_SLX, method = "arellano")
 
+
 # coeftest
 corrected_res <- lmtest::coeftest(x = panel_SLX, vcov = rVCV)
-
+lmtest::coeftest(panel_SDE)
 # table
-stargazer::stargazer(corrected_res)
+#stargazer::stargazer(corrected_res)
 
 

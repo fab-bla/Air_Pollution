@@ -81,7 +81,6 @@ df_panel[, "Population_affected_by_Naural_Desasters"] |> is.na() -> ind
 fml <- paste("Health_Care_Expenditures ~", paste(colnames(df_panel)[incl_ind & miss_ind], collapse = " + ")) |> as.formula()
 
 # first test
-slmlag <- splm::slmtest(fml, data = df_panel, listw = Wlist, test = "lme", model = "within")
 
 # panel SLX and SDE
 panel_SLX <- plm::plm(fml, data = df_panel, effect = "individual", model = "within") #individual because we include the effect of the provinces in the model after demeaning over time https://www.wu.ac.at/fileadmin/wu/d/i/iqv/Gstach/Artikel/Croissant__2008_.pdf

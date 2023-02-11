@@ -125,10 +125,23 @@ Huang, Pan, Guo, Li (2018) indicate in their analysis, in which they map the nat
 
 In summary, a number of measures have been taken by the Chinese government from 2011 to 2018 to reduce air pollution, including stricter emission standards for vehicles, power plants and industrial facilities, and the closure or upgrading of older, heavily polluting factories, which were partially effective. %https://www.mdpi.com/1660-4601/13/12/1219 
 
-\section{Data}
+\section{Data}\label{Data}
 
 \section{Methodology}
+%Use of panel data models
+As already discussed in section \ref{Literature review}, the possibility of a spatial autoregressive process (SAR) is rather unlikely considering the Hukou system. We therefore excluded the possibility of a SAR component before using statistical testing to determine the final model.\\
+We started the testing procedure by using the (Spatial) Hausmann Test to decide whether fixed or random effects suit the data better. The test strongly indicated the usage of a fixed effects model over time, which is in line with the intuition as China's provinces are heterogenerous and eliminating time constant features such as geographic differences seems like a reasonable approach.\\
+In the following a Lagrange Mulitplier Test to decide whether a spatial error model (SEM) should be used. We could not reject the $H_0$ of a OLS model. Therefore, we continued to use a spatial lag in X (SLX) model, whose lag components can directly be tested by t-tests. The inclusion of a SLX component comes from the fact that air pollution of one province is likely to influence air pollution of neighbouring provinces. But, as already discussed in section \ref{Data}, it is not known whether the emission variables are only total emmission in a provinces that were also created in this province or if some smoothing of the data was already applied such that some distance travelled by means of kernel distribution or similar is used in order to account the effect on neighbouring provinces. The introduction of spatial lags concerning the air pollution will not cause any harm other than potential multicolinearity issues if they are in fact redundant.\\
+The next step was to check to possible presence of heteroscedastic and serial correlated errors. Firstly, a Breusch-Pagan test was used to test for heteroscedasticity. Here we could reject the Null-Hypothesis of homoscedastic errors. Secondly, a Durbin-Watson test was conducted to test for serial correlation. The test strongly suggested serial correlation. As a result, we used a robust variance covariance matrix in order to account for this error structure and improve the reliability of our results\\
+For the identification of the model, a general-to-specific approach was utilized, where we started with all reasonable variables and potential lags and eliminated them iteratively with the use of t-tests.\\
+As a robustness check of our results, we used a feasible generalized least square model. 
 
+<<<<<<< Updated upstream
+=======
+%OLS model as a robustness check
+
+
+>>>>>>> Stashed changes
 \section{Results}
 
 \begin{table}[!htbp] \centering 

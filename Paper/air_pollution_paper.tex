@@ -134,14 +134,14 @@ We started the testing procedure by using the (Spatial) Hausmann Test to decide 
 In the following a Lagrange Mulitplier Test to decide whether a spatial error model (SEM) should be used. We could not reject the $H_0$ of a OLS model. Therefore, we continued to use a spatial lag in X (SLX) model, whose lag components can directly be tested by t-tests. The inclusion of a SLX component comes from the fact that air pollution of one province is likely to influence air pollution of neighbouring provinces. But, as already discussed in section \ref{Data}, it is not known whether the emission variables are only total emmission in a provinces that were also created in this province or if some smoothing of the data was already applied such that some distance travelled by means of kernel distribution or similar is used in order to account the effect on neighbouring provinces. The introduction of spatial lags concerning the air pollution will not cause any harm other than potential multicolinearity issues if they are in fact redundant.\\
 The next step was to check to possible presence of heteroscedastic and serial correlated errors. Firstly, a Breusch-Pagan test was used to test for heteroscedasticity. Here we could reject the Null-Hypothesis of homoscedastic errors. Secondly, a Durbin-Watson test was conducted to test for serial correlation. The test strongly suggested serial correlation. As a result, we used a robust variance covariance matrix in order to account for this error structure and improve the reliability of our results\\
 For the identification of the model, a general-to-specific approach was utilized, where we started with all reasonable variables and potential lags and eliminated them iteratively with the use of t-tests.\\
-As a robustness check of our results, we used a feasible generalized least square model. 
+As a robustness check of our results, we used a feasible generalized least square model. Very similar to the SLX model we use a robust variance covavariance matrix that is corrected for heteroscedasticity and serial correlation. Also, the most general model is assumed again and variables are eliminated one-by-one.\par
+Some variables of interest are in monetary terms. To account for the mere growth in these variables due to increased prices we adjust every monetary variables (X) by the general consumer price index (CPI)
+$$\widetilde{X} = \frac{X}{CPI/100}.$$
+The CPI is divided by 100 as it is reported with baseline value 100.\\
+Additionally, on every variable a logarithmic transformation was used. The reason for this is twofold. To begin with it might further help with the heteroscedastic and serially correlated errors and therefore provide more reliant estimates. And it also helps to make the interpretation of the estimates more intuitively. One exception to this procedure is the share of working population, as this variables already presents a share of the whole population, a further transformation would make its interpretation meaningless.\\
 
-<<<<<<< Updated upstream
-=======
-%OLS model as a robustness check
 
 
->>>>>>> Stashed changes
 \section{Results}
 
 \begin{table}[!htbp] \centering 

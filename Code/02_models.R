@@ -56,6 +56,14 @@ df_panel <- cbind(df_panel, lagged_vars) |> plm::pdata.frame(index = c("Region",
                            "Gross_regional_product", "Total_Gov._Expenditure", "Rural_Population", "Sample_population_of_age_15_65", "Disposable_Income_per_Capita_Rural", 
                            "Disposable_Income_per_Capita_Rural_lag", "Disposable_Income_per_Capita_Urban_lag") -> incl_ind
 
+# build indices
+!colnames(df_panel) %in% c("Region", "Geom", "year", "Number_of_Beds_in_Health_Care_Institutions",
+                           "Number_of_Beds_in_Hospitals", "Number_of_Health_Care_Institutions", "Number_of_Medical_Personell",
+                           "Sample_population_of_age_0_14", "Sample_population_of_age_65_and_older", "Waste_Gas_Emissions_Smoke_and_Dust", "CPI_Health_Care",
+                           "Health_Care_Expenditures", "Consumer_Price_Index", "Disposable_Income_per_Capita",
+                           "Gross_regional_product", "Total_Gov._Expenditure", "Waste_Gas_Emissions_Nitrogen_lag", "Waste_Gas_Emissions_Particular_Matter_lag",
+                           "Waste_Gas_Emissions_Sulphur_lag", "Disposable_Income_per_Capita_Rural_lag", "Disposable_Income_per_Capita_Urban_lag", "Sample_population_of_age_15_65", "Disposable_Income_per_Capita_Urban", "Rural_Population") -> incl_ind
+
 # incl ind with controls
 # !colnames(df_panel) %in% c("Region", "Geom", "year", "Number_of_Beds_in_Health_Care_Institutions",
 #                            "Number_of_Beds_in_Hospitals", "Number_of_Health_Care_Institutions", "Number_of_Medical_Personell",
@@ -81,7 +89,6 @@ df_panel[, "Population_affected_by_Naural_Desasters"] |> is.na() -> ind
 fml <- paste("Health_Care_Expenditures ~", paste(colnames(df_panel)[incl_ind & miss_ind], collapse = " + ")) |> as.formula()
 
 # first test
-slmlag <- splm::slmtest(fml, data = df_panel, listw = Wlist, test = "lme", model = "within")
 
 # panel SLX and SDE
 panel_SLX <- plm::plm(fml, data = df_panel, effect = "individual", model = "within") #individual because we include the effect of the provinces in the model after demeaning over time https://www.wu.ac.at/fileadmin/wu/d/i/iqv/Gstach/Artikel/Croissant__2008_.pdf
@@ -144,4 +151,6 @@ corrected_res_log <- lmtest::coeftest(x = panel_SLX_log, vcov = rVCV_log)
 corrected_res_log
 
 # export table
-stargazer::stargazer(corrected_res_log)
+stargazer::stargazer(corrected_res_log, readRDS("./Data/Misc/gen_to_spec_SLX.rds"))
+
+

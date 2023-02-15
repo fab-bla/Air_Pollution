@@ -84,6 +84,9 @@
 \includegraphics[width = 380pt]{pollution.png} 
 \end{center}
 \thispagestyle{empty}
+\begin{abstract}
+	
+\end{abstract}
 \newpage
 \pagenumbering{arabic}
 
@@ -146,53 +149,77 @@ Domestic migration was likewise discouraged by the federal government.
 The central government closely regulated migration flows, and only recently have these limitations been loosened, in the era of Mao Zhedong. This doesn't imply that the hukou system is no longer in place; rather, it only means that, for instance, rural dwellers can move to a city but won't be eligible for any social benefits there and will have to make due with their own resources.
 
 
-\section{Results}
+\section{Methodology}
+%Use of panel data models
+As already discussed in section \ref{Literature review}, the possibility of a spatial autoregressive process (SAR) is rather unlikely considering the Hukou system. We therefore excluded the possibility of a SAR component before using statistical testing to determine the final model.\\
+We started the testing procedure by using the (Spatial) Hausmann Test to decide whether fixed or random effects suit the data better. The test strongly indicated the usage of a fixed effects model over time, which is in line with the intuition as China's provinces are heterogenerous and eliminating time constant features such as geographic differences seems like a reasonable approach.\\
+In the following a Lagrange Mulitplier Test to decide whether a spatial error model (SEM) should be used. We could not reject the $H_0$ of a OLS model. Therefore, we continued to use a spatial lag in X (SLX) model, whose lag components can directly be tested by t-tests. The inclusion of a SLX component comes from the fact that air pollution of one province is likely to influence air pollution of neighbouring provinces. But, as already discussed in section \ref{Data}, it is not known whether the emission variables are only total emmission in a provinces that were also created in this province or if some smoothing of the data was already applied such that some distance travelled by means of kernel distribution or similar is used in order to account the effect on neighbouring provinces. The introduction of spatial lags concerning the air pollution will not cause any harm other than potential multicolinearity issues if they are in fact redundant.\\
+The next step was to check to possible presence of heteroscedastic and serial correlated errors. Firstly, a Breusch-Pagan test was used to test for heteroscedasticity. Here we could reject the Null-Hypothesis of homoscedastic errors. Secondly, a Durbin-Watson test was conducted to test for serial correlation. The test strongly suggested serial correlation. As a result, we used a robust variance covariance matrix in order to account for this error structure and improve the reliability of our results\\
+For the identification of the model, a general-to-specific approach was utilized, where we started with all reasonable variables and potential lags and eliminated them iteratively with the use of t-tests.\\
+As a robustness check of our results, we used a feasible generalized least square model. Very similar to the SLX model we use a robust variance covavariance matrix that is corrected for heteroscedasticity and serial correlation. Also, the most general model is assumed again and variables are eliminated one-by-one.\par
+Some variables of interest are in monetary terms. To account for the mere growth in these variables due to increased prices we adjust every monetary variables (X) by the general consumer price index (CPI)
+$$\widetilde{X} = \frac{X}{CPI/100}.$$
+The CPI is divided by 100 as it is reported with baseline value 100.\\
+Additionally, on every variable a logarithmic transformation was used. The reason for this is twofold. To begin with it might further help with the heteroscedastic and serially correlated errors and therefore provide more reliant estimates. And it also helps to make the interpretation of the estimates more intuitively. One exception to this procedure is the share of working population, as this variables already presents a share of the whole population, a further transformation would make its interpretation meaningless.\\
 
+
+
+\section{Results}
+As previously outlined, the models presented in the table below were obtained using the general to specific model selection procedure. Starting from the model with all controls, statistically insignificant explanatory control variables were subsequently removed one at a time. During this process, the sign as well as the significance of our pollution variables were very sensitive to small changes in the model, i.e., we observed large changes in obtained estimates over a single iteration of the general to specific selection procedure. Accordingly, the presented results are to be interpreted cautiously. The unstable coefficient estimates are most likely caused by a combination of highly collinear explanatory variables and the absence of important variables that drive health care expenditures in our model.\\ Nevertheless, some key takeaways can be made. We observe that in our model, which does not contain spatially lagged variables, that Particulate Matter Emissions have a significant effect while in the SLX model this is not the case. This might be due to the mentioned multicollinearity problems, as all pollution variables exhibit a positive spatial correlation. The negative and significant effect of Sulphur Gas emissions, is most likely also a result of the multicolliniearity in our model. Especially, given that the spatial lag features a positive and significant coefficient, there is no sensible interpretation to be made. The key takeaway should thus be, even though we find a positive and significant effect of Particulate Matter Emission (fGLS) on Health Care Expenditure, the result is both unstable over iterations in our model selection procedure and also across model types. Further, given our modelling and identification strategy, we may not claim that the results represent a causal relationship between the examined variables.
 \begin{table}[!htbp] \centering 
-	\caption{} 
+	\caption{Results fGLS \& SLX} 
 	\label{} 
-	\begin{tabular}{@{\extracolsep{5pt}}lc} 
+	\begin{tabular}{@{\extracolsep{5pt}}lcc} 
 		\\[-1.8ex]\hline 
 		\hline \\[-1.8ex] 
-		& \multicolumn{1}{c}{\textit{Dependent variable:}} \\ 
-		\cline{2-2} 
-		\\[-1.8ex] &   \\ 
+		& \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+		\cline{2-3} 
+		\\[-1.8ex] & \multicolumn{2}{c}{ } \\ 
+		\\[-1.8ex] & fGLS & SLX\\ 
 		\hline \\[-1.8ex] 
-		Disposable\_Income\_per\_Capita\_Rural & $-$0.007 \\ 
-		& (0.014) \\ 
-		Disposable\_Income\_per\_Capita\_Urban & 0.009$^{***}$ \\ 
-		& (0.003) \\ 
-		Forest\_Coverage\_Rate & 2.817 \\ 
-		& (2.866) \\ 
-		Rural\_Population & 0.103 \\ 
-		& (0.100) \\ 
-		Sample\_population\_of\_age\_0\_14 & $-$12.516$^{**}$ \\ 
-		& (4.917) \\ 
-		Sample\_population\_of\_age\_65\_and\_older & $-$0.183 \\ 
-		& (3.970) \\ 
-		Urban\_Population & 0.482$^{***}$ \\ 
-		& (0.075) \\ 
-		Waste\_Gas\_Emissions\_Nitrogen & $-$0.430 \\ 
-		& (0.349) \\ 
-		Waste\_Gas\_Emissions\_Particular\_Matter & 0.513$^{**}$ \\ 
-		& (0.230) \\ 
-		Waste\_Gas\_Emissions\_Sulphur & 0.608$^{*}$ \\ 
-		& (0.330) \\ 
-		Waste\_Gas\_Emissions\_Nitrogen\_lag & $-$0.505 \\ 
-		& (0.612) \\ 
-		Waste\_Gas\_Emissions\_Particular\_Matter\_lag & 0.127 \\ 
-		& (0.303) \\ 
-		Waste\_Gas\_Emissions\_Sulphur\_lag & $-$0.442 \\ 
-		& (0.391) \\ 
-		Disposable\_Income\_per\_Capita\_Rural\_lag & 0.020 \\ 
-		& (0.021) \\ 
-		Disposable\_Income\_per\_Capita\_Urban\_lag & $-$0.012$^{*}$ \\ 
-		& (0.006) \\ 
+		log(Disposable Income per Capita Rural) & 1.072$^{***}$ &  \\ 
+		& (0.067) &  \\ 
+		& & \\ 
+		log(Disposable Income per Capita Urban) &  & 1.180$^{***}$ \\ 
+		&  & (0.081) \\ 
+		& & \\ 
+		log(Forest Coverage Rate) & 0.490$^{***}$ & 0.287$^{**}$ \\ 
+		& (0.102) & (0.144) \\ 
+		& & \\ 
+		log(Urban Population) & 0.308$^{**}$ & 0.504$^{***}$ \\ 
+		& (0.145) & (0.135) \\ 
+		& & \\ 
+		log(Waste Gas Emissions Nitrogen) & $-$0.045 & 0.006 \\ 
+		& (0.035) & (0.041) \\ 
+		& & \\ 
+		log(Waste Gas Emissions Particulate Matter) & 0.063$^{***}$ & 0.032 \\ 
+		& (0.024) & (0.023) \\ 
+		& & \\ 
+		log(Waste Gas Emissions Sulphur) & $-$0.007 & $-$0.063$^{**}$ \\ 
+		& (0.016) & (0.028) \\ 
+		& & \\ 
+		log(Waste Gas Emissions Nitrogen Lag) &  & $-$0.111 \\ 
+		&  & (0.088) \\ 
+		& & \\ 
+		log(Waste Gas Emissions Particulate Matter Lag) &  & 0.117$^{***}$ \\ 
+		&  & (0.040) \\ 
+		& & \\ 
+		log(Waste Gas Emissions Sulphur Lag) &  & 0.093$^{**}$ \\ 
+		&  & (0.041) \\ 
+		& & \\ 
 		\hline \\[-1.8ex] 
 		\hline 
 		\hline \\[-1.8ex] 
-		\text{}  & \multicolumn{1}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+		\textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
 	\end{tabular} 
-\end{table}
+\end{table} 
+
+\section{Conclusion}
 
 \end{document}
+
+
+
+
+
+

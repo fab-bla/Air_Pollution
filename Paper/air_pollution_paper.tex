@@ -88,6 +88,12 @@ style = apa]
 \begin{center}
 \includegraphics[width = 380pt]{pollution.png} 
 \end{center}
+
+\vspace{1cm}
+
+\begin{abstract}
+
+\end{abstract}
 \thispagestyle{empty}
 \newpage
 \pagenumbering{arabic}
@@ -143,7 +149,7 @@ Additionally, on every variable a logarithmic transformation was used. The reaso
 
 
 \section{Results}
-As previously outlined, the models presented in the table below were obtained using the general to specific model selection procedure. Starting from the model with all controls, statistically insignificant explanatory control variables were subsequently removed one at a time. During this process, the sign as well as the significance of our pollution variables were very sensitive to small changes in the model, i.e., we observed large changes in obtained estimates over a single iteration of the general to specific selection procedure. Accordingly, the presented results are to be interpreted cautiously. The unstable coefficient estimates are most likely caused by a combination of highly collinear explanatory variables and the absence of important variables that drive health care expenditures in our model.\\ Nevertheless, some key takeaways can be made. We observe that in our model that does not contain spatially lagged variables, that Particulate Matter Emissions have a significant effect while in the SLX model this is not the case. This might be due to the mentioned collinearity problems, as all pollution variables exhibit a positive spatial correlation. The negative and significant effect of Sulphur Gas emissions, is most likely also a result of the collinearity in our model. Especially, given that the spatial lag features a positive and significant coefficient, there is no sensible interpretation to be made. The key takeaway should thus be, even though we find a positive and significant effect of Particulate Matter Emission (FGLS) on Health Care Expenditure, the result is both unstable over iterations in our model selection procedure and also across model types. Further, given our modelling and identification strategy, we may not claim that the results represent a causal relationship between the examined variables.
+As previously outlined, the models presented in the table below were obtained using the general to specific model selection procedure. Starting from the model with all controls, statistically insignificant explanatory control variables were subsequently removed one at a time. During this process, the sign as well as the significance of our pollution variables were very sensitive to small changes in the model, i.e., we observed large changes in obtained estimates over a single iteration of the general to specific selection procedure. Accordingly, the presented results are to be interpreted cautiously. The unstable coefficient estimates are most likely caused by a combination of highly collinear explanatory variables and the absence of important variables that drive health care expenditures in our model.\\ Nevertheless, some key takeaways can be made. We observe that in our model, which does not contain spatially lagged variables, that Particulate Matter Emissions have a significant effect while in the SLX model this is not the case. This might be due to the mentioned multicollinearity problems, as all pollution variables exhibit a positive spatial correlation. The negative and significant effect of Sulphur Gas emissions, is most likely also a result of the multicolliniearity in our model. Especially, given that the spatial lag features a positive and significant coefficient, there is no sensible interpretation to be made. The key takeaway should thus be, even though we find a positive and significant effect of Particulate Matter Emission (fGLS) on Health Care Expenditure, the result is both unstable over iterations in our model selection procedure and also across model types. Further, given our modelling and identification strategy, we may not claim that the results represent a causal relationship between the examined variables.
 \begin{table}[!htbp] \centering 
 	\caption{Results fGLS \& SLX} 
 	\label{} 
@@ -192,6 +198,7 @@ As previously outlined, the models presented in the table below were obtained us
 	\end{tabular} 
 \end{table} 
 
+\section{Conclusion}
 
 \end{document}
 

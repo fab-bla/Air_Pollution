@@ -3,7 +3,8 @@ source("./Code/Auxilliary.R")
 
 # packages
 get.package(c("ggplot2", "gganimate", "tidyr", 
-              "spdep", "dplyr", "gifski", "SDPDmod", "geojson", "sf"))
+              "spdep", "dplyr", "gifski", "SDPDmod", "geojson", "sf",
+              "patchwork"))
 
 # data
 df <- readRDS("./Data/China_Sourced/rds/dat_long.rds")
@@ -114,22 +115,87 @@ lapply(df_split_year, \(df_year){
 df_incl_moran <- do.call(rbind, lst_moran_res_by_year)
 df_sf_moran <- st_as_sf(df_incl_moran)
 
+############################### Plots for Descriptives chapter #################
+
+# descriptives
+titles_legend <- c("Expenditure in\n100MM of Yuan",
+                   "Sulphur Dioxide\nin 10K of Tons",
+                   "Particulate Matter\nin 10K of Tons",
+                   "Nitrogen Oxides\nin 10K of Tons",
+                   rep("Local Moran's I\nQueen Contiguity", 4))
+
+titles_main <- paste0(c("Health Care Expenditure in:",
+                        "Sulphur Dioxide Emissions in:",
+                        "Particulate Matter Emissions in:",
+                        "Nitrogen Oxide Emissions in:",
+                        paste0("Local Moran's I for ", c("Health Care Expenditure",
+                                                         "Sulphur Dioxide",
+                                                         "Particulate Matter", 
+                                                         "Nitrogen Oxides"), " in:")))
+
+var <- c("Health_Care_Expenditures", "Waste_Gas_Emissions_Sulphur",
+         "Waste_Gas_Emissions_Particular_Matter",
+         "Waste_Gas_Emissions_Nitrogen")
+
+var <- c(var, paste0("Ii_", var))
+
+
+# plot morans I for 
+Map(\(legend, title, var){
+  
+  # over variables
+  Map(\(year){
+    
+    # identical legends across years
+    legend_max <- max(df_incl_moran[df_incl_moran[, "year"] == 2011, var],
+                      df_incl_moran[df_incl_moran[, "year"] == 2019, var])
+    legend_min <- min(df_incl_moran[df_incl_moran[, "year"] == 2011, var],
+                      df_incl_moran[df_incl_moran[, "year"] == 2019, var])
+    
+    # subset 
+    plot_df <- st_as_sf(df_incl_moran[df_incl_moran[, "year"] == year, ])
+
+    # plot
+    ggplot(data = plot_df) +
+      geom_sf(aes(fill = .data[[var]]), color = "black") +
+      ggtitle(paste(title, year)) +
+      scale_fill_viridis_c(direction = -1, name = legend, limits = c(legend_min, legend_max)) +
+      theme_void() + 
+      theme(title = element_text(size = 16, face = "bold"),
+            legend.text = element_text(size = 12))
+    
+    
+  },  c(2011, 2019)) |> setNames(c(2011, 2019)) -> temp
+
+  # safe plot
+  pdf(paste0("./Data/China_Sourced/plots/", var, "_comp.pdf"), width = 15.6, height = 5.65)
+  print(temp[[1]] + temp[[2]])
+  dev.off()
+  
+}, titles_legend, titles_main, var) |> setNames(var) -> plots_begin_end
+
+# save plots
+
+plots_begin_end[[1]][[1]] + plots_begin_end[[1]][[2]] 
+
+################################################################################
+
 # plot
-# ggplot(data = plot_df_sf) +
-#   geom_sf(aes(fill = Ii), color = "black") +
-#   ggtitle("Local Moran's I", subtitle = "Health Care Expenditure 2019") +
-#   scale_fill_viridis_c(direction = -1, name = "Local Moran's I") +
-#   theme_void()
+ggplot(data = plot_df_sf) +
+  geom_sf(aes(fill = Ii), color = "black") +
+  ggtitle("Local Moran's I", subtitle = "Health Care Expenditure 2019") +
+  scale_fill_viridis_c(direction = -1, name = "Local Moran's I") +
+  theme_void()
 
 # ggsave 
 # ggsave("./Data/China_Sourced/plots/moran_2019.pdf")
 
 # plot
-# ggplot(data = plot_df_sf) +
-#   geom_sf(aes(fill = Health_Care_Expenditures), color = "black") +
-#   ggtitle("Health Care Expenditure", subtitle = "in millions of Yuan") +
-#   scale_fill_viridis_c(direction = -1, name = "Expenditure", limits = c(20, 1620)) +
-#   theme_void()
+ggplot(data = plot_df_sf) +
+  geom_sf(aes(fill = Health_Care_Expenditures), color = "black") +
+  ggtitle("Health Care Expenditure", subtitle = "in millions of Yuan") +
+  scale_fill_viridis_c(direction = -1, name = "Expenditure", limits = c(20, 1620)) +
+  theme_void()
 
 # ggsave 
 # ggsave("./Data/China_Sourced/plots/HCE_2019.pdf")
@@ -193,7 +259,9 @@ var <- c(var, paste0("Ii_", var))
 
 # map over vars
 Map(map_gif, list(df_sf_moran), var, titles_main, titles_legend, dests)
+
 ################################INVERSE DISTANCE###############################################
+
 dests <- paste0("./Data/China_Sourced/gifs/", c("HC_exp_MI_ID.gif",
                                                 "sulphur_MI_ID.gif", "part_matter_MI_ID.gif", 
                                                 "nitrogen_MI_ID.gif"))

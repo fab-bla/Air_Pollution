@@ -90,11 +90,16 @@ style = apa]
 	\end{center}
 	\thispagestyle{empty}
 	\vspace*{30pt}
-	\begin{center}
+%	\begin{center}
 		\textbf{Abstract}
-	In this paper, we analyze the spatial effects of air pollution - namely nitrogen oxide, sulfur dioxide and particulate matter - on health care expenditures in China. Our research question is: "To what extent does air pollution and its spatial spillover effects influence health care expenditures in China? A model with a spatial lag in X (SLX) was chosen based on theoretical justifications and testing, and a feasible GLS model was conducted. Our W matrix is continguity based, due to the structure of China. In addition, a robust covariance-variance matrix was included due to heterogeneity of regions and spatial autocorrelation. The results show that
-		
-	\end{center}
+	Air pollution and its consequences for nature and humanity is an omnipresent global issue, where particularly China stands out. \cite{rasch_under_nodate} reports that coal combustion, industrial production
+	and automobile emissions are the main causes for
+	air pollution in China. Coal and oil combustion alone account for around 60 percent of $PM_2.5$ pollution in China.
+	This paper analyzes the spatial effects of air pollution on the Chinese health care expenditures. We aim to answer the following research question: "To what extent does air pollution and its spatial spillover effects influence health care expenditures in China? A model with a spatial lag in X (SLX) was chosen based on theoretical justifications and testing procedure, accompanied by a feasible Generalized Least Squares (fGLS) model. 
+	The weights matrix chosen to describe the neighborhood structure is continguity based, since Inner Mongolia, for example, has eight neighbors, whereas Xinjiang has just three. 
+	In addition, a robust covariance-variance matrix was included due to heterogeneity of regions and spatial autocorrelation. The results of the SLX model show that Nitrogen Oxid ($NO$) and Particulate Matter ($PM_{2.5}$)
+	increase public health care spending by 0.006 and 0.032, as well as the lag of the second mentioned variable by 0.117 (where only the lag of Particulate Matter is highly significant). With sulphur dioxide ($SO_2$), only lag has a significant positive effect on our dependent variable of 0.093. In the fGLS model in comparison, the significant positive effect of Particulate Matter of 0.063 and the negative effect of Sulphur of -0.007 remain. We assume that an ommited variable bias is behind these counterintuitive results.
+%	\end{center}
 	\newpage
 	\pagenumbering{arabic}
 	
@@ -272,16 +277,20 @@ Depending on which social insurance system a patient is covered under - more on 
 	\section{Conclusion}
 	This short research note on air pollution in china offers a concise overview of the relevant current literature as well as our analysis carried out utilizing an SLX panel model as well as a standard fixed effects panel model. Due to inconsistencies in the model selection procedure the obtained results are to be interpreted cautiously. The underlying cause of those inconsistencies are not entirely straight forward to identify, however, it is quite likely that they may be explained by a large part by two factors. First, our pollution variables measure emissions and not actual pollution, depending on the difference to the actual measured pollution that could be obtained by measurements on the ground, this inaccuracy might weaken the link between pollution and increases in Health Care Expenditure. Further, even though we included quite a few 
 	variables as controls, it is still quite likely that we are suffering to an omitted variable bias. Missing some important explanatory variables would also explain the large changes in estimates across a single interation of our model selection procedure. 
-	When compared to the original paper that we had intended to replicate by \textcite{zeng2019does} we noticed a few issues afterwards. 
+	When compared to the original paper that we had intended to replicate by \cite{zeng2019does} we noticed a few issues afterwards. 
 	
+	Die haben einfach ein SAR model durchgezogen obwohl es nicht machen sollen 
 	
+	Variable die drinnen sind doctors, hospital bed als x und es kann sein dass das hce auch beschreiben (sprich ein simulnatety bias)
+	
+	govenment expenditures -> HCE 
 	
 	
 	
 	[compare and contrast results to literature]
 	
 	
-	One result that seems odd at the first glance is that in the SLX model only urban, but not rural disposable income per capita is significant (and vice versa in the fGLS model). However, a plausible explanation emerges from the theory: After the strict regulations and controls based on the hukou system were relaxed under Mao Zhedong, it was now possible for rural residents to settle in urban regions and take up work. However, life as a rural migrant in the city is still marked by great inequalities, including in the health care system. In order to change one's residence, there are not only financial burdens, but also the "surrender" of houses and land in the countryside. For this reason, many rural residents choose not to re-register, preferring to remain uninsured in the city, and in fact have to pay out of their own pockets. Since we do not have data on private health care expenditures, this remains only a hypothesis.
+
 	\newpage
 	\printbibliography[heading=bibintoc]
 	\newpage

@@ -6,7 +6,7 @@ library("DiagrammeR")
 
 mermaid(diagram="
  graph LR
- A(Air Pollution)-->B
+ A(Air Pollution)-->B(Health)
  
 ",
 )
@@ -25,10 +25,13 @@ node [shape=plaintext
       style=filled
       fillcolor=lightgrey] #color = to change the color of the frame
 A [label='Air Pollution'] 
-B 
-C 
-D 
-E
+B [label='Health'] 
+C [label='acute diseases'] 
+D [label='chronic diseases'] 
+E [label='urban employee'] 
+F [label='urban unemployed'] 
+G [label='rural inhabitants'] 
+H [label='Health Care Expenditures'] 
 
 
 edge [color = black
@@ -37,13 +40,15 @@ rankdir = LR
 
       
 A->B
-A->C
-
+B->C
 B->D
-
-D->E
 C->E
+D->E
+D->F
+D->G
+E->H
+F->H
+G->H
 
-C->D
 
 }")

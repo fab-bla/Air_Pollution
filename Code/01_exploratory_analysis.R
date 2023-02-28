@@ -46,6 +46,22 @@ df_cut_years[, "Geom_alt"] <- NULL
 
 ################################################################################
 
+cumm_airpol<- df_cut_years %>%
+  group_by(jahr = year) %>%
+  summarise(SummeNO = sum(Waste_Gas_Emissions_Nitrogen),SummePM = sum(Waste_Gas_Emissions_Particular_Matter),SummeSO2 = sum(Waste_Gas_Emissions_Sulphur))
+  
+ggplot(data = cumm_airpol, aes(x = jahr)) +
+  geom_line(aes(y = SummeNO, color = "Nitrogen Oxides"), size = 1) +
+  geom_line(aes(y = SummePM, color = "Particulate Matter"), size = 1) +
+  geom_line(aes(y = SummeSO2, color = "Sulfur dioxide"), size = 1) +
+  labs(title = "Development of Emmissions across China (2011-2019)", x = "Year", y = "Cummulated Emissions in 10,000 tons") +
+  scale_color_manual(name = "Emmission type", values = c("Nitrogen Oxides" = "gold", "Particulate Matter" = "green", "Sulfur dioxide" = "darkblue"))+
+  scale_x_continuous(breaks = unique(cumm_airpol$jahr), minor_breaks = NULL)+
+  theme(panel.background = element_rect(fill = "grey97"))
+
+
+################################################################################
+
 # find W matrix conti
 df_W <- df_cut_years_W[df_cut_years_W$year == 2018, ]
 
